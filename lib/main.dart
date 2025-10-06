@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'services/firebase_options.dart';
 
-import 'screens/LoginScreen.dart';
-import 'screens/TeacherScreen.dart';
-import 'screens/StudentScreen.dart';
-import 'screens/ManageTeacherScreen.dart';
+import 'pages/LoginScreen.dart';
+import 'pages/TeacherScreen.dart';
+import 'pages/StudentScreen.dart';
+import 'pages/ManageTeacherScreen.dart';
+import 'pages/HomeScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,13 +22,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'QR Chamada',
+      title: 'QRCode Chamada',
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
         routes: {
           '/': (context) => LoginScreen(),
           '/teacher': (context) => const TeacherScreen(),
           '/scanner': (context) => const StudentScreen(),
+          '/home': (_) => const HomeScreen(),
           '/manage': (context) => const ManageTeachersScreen(),
         },
     );

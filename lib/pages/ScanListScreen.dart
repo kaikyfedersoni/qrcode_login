@@ -13,7 +13,7 @@ class ScanListScreen extends StatelessWidget {
         .orderBy('timestamp', descending: false);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Leituras')),
+      appBar: AppBar(title: const Text('Lista de Presença')),
       body: StreamBuilder<QuerySnapshot>(
         stream: scansQuery.snapshots(),
         builder: (context, snap) {
