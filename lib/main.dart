@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'services/firebase_options.dart';
 
-import 'pages/LoginScreen.dart';
-import 'pages/TeacherScreen.dart';
-import 'pages/StudentScreen.dart';
-import 'pages/ManageTeacherScreen.dart';
-import 'pages/HomeScreen.dart';
+import 'qrcode/pages/login/views/login_screen.dart';
+import 'qrcode/pages/teacher/view/teacher_screen.dart';
+import 'qrcode/pages/student/view/student_screen.dart';
+import 'qrcode/pages/teacher/view/manage_teacher_screen.dart';
+import 'qrcode/pages/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

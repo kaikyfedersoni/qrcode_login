@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/GenerateQrForm.dart';
-import 'ScanListScreen.dart';
+import '../../student/view/scan_list_screen.dart';
+import 'widgets/generate_qr_form.dart';
+
 
 class TeacherScreen extends StatelessWidget {
   const TeacherScreen({super.key});
