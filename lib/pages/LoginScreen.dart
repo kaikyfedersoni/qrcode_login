@@ -65,12 +65,14 @@ class _LoginScreenState extends State<LoginScreen> {
         final data = docSnap.data()!;
         final savedDeviceId = data['deviceId'];
 
-        //Se já existir um deviceId e for diferente, bloqueia o login
-        if (savedDeviceId != null && savedDeviceId != deviceId) {
+        final role = data['role'] ?? 'aluno';
+
+// Trava apenas se o usuário for aluno
+        if (role == 'aluno' && savedDeviceId != null && savedDeviceId != deviceId) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
-                'Sua conta já está conectada em outro dispositivo.',
+                '❌ Sua conta já está conectada em outro dispositivo.',
                 style: TextStyle(color: Colors.white),
               ),
               backgroundColor: Colors.red,
