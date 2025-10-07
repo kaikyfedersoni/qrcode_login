@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,12 +16,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Função para gerar um ID único do dispositivo
+  Future<String> _getDeviceId() async {
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+    return androidInfo.id; // cada aparelho Android tem um ID único
+  }
+
   Future<void> signInWithGoogle() async {
     try {
-      // 🔹 Força o logout anterior para o usuário poder escolher outra conta
+      // Força logout anterior para escolher conta novamente
       await _googleSignIn.signOut();
 
-      // 🔹 Tela de login Google
+      // Login Google
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return;
 
@@ -32,31 +40,54 @@ class _LoginScreenState extends State<LoginScreen> {
         idToken: googleAuth.idToken,
       );
 
-      // 🔹 Login com Firebase Auth
+      // Login no Firebase
       final userCredential = await _auth.signInWithCredential(credential);
       final user = userCredential.user;
       if (user == null) return;
+
+      // Obtém ID do dispositivo
+      final deviceId = await _getDeviceId();
 
       final docRef = _firestore.collection('usuarios').doc(user.uid);
       final docSnap = await docRef.get();
 
       if (!docSnap.exists) {
-        // 🆕 Novo usuário: cria documento com dados iniciais
+        // Novo usuário
         await docRef.set({
           'nome': user.displayName ?? '',
           'email': user.email ?? '',
-          'role': 'aluno', // padrão inicial
+          'role': 'aluno',
+          'deviceId': deviceId, // 👈 salva o ID do dispositivo
           'createdAt': FieldValue.serverTimestamp(),
-          'ultimo_login': FieldValue.serverTimestamp(), // 👈 último login
+          'ultimo_login': FieldValue.serverTimestamp(),
         });
       } else {
-        // 👇 Usuário já existente: apenas atualiza o último login
+        final data = docSnap.data()!;
+        final savedDeviceId = data['deviceId'];
+
+        //Se já existir um deviceId e for diferente, bloqueia o login
+        if (savedDeviceId != null && savedDeviceId != deviceId) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Sua conta já está conectada em outro dispositivo.',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+          await _auth.signOut(); // força logout
+          return;
+        }
+
+        // Atualiza último login e garante o mesmo deviceId
         await docRef.update({
           'ultimo_login': FieldValue.serverTimestamp(),
+          'deviceId': deviceId,
         });
       }
 
-      // 🔹 Após login e registro, vai para a Home
+      // Redireciona para a Home
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
