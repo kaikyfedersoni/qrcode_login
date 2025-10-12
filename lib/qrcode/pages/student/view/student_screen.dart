@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-
-
 import '../controller/student_controller.dart';
 import 'widget/qr_scanner_widget.dart';
-
 
 class StudentScreen extends StatefulWidget {
   const StudentScreen({super.key});
@@ -40,15 +37,17 @@ class _StudentScreenState extends State<StudentScreen> {
       appBar: AppBar(title: const Text("Aluno - Escanear QR Code")),
       body: Column(
         children: [
-          Expanded(
-            child: QrScannerWidget(onDetect: _onDetect),
-          ),
+          Expanded(child: QrScannerWidget(onDetect: _onDetect)),
           if (scannedData != null)
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                "Presença confirmada em: $scannedData",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                "✅ Presença confirmada em: $scannedData",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
               ),
             ),
         ],

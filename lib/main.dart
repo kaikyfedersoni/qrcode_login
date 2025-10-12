@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'qrcode/consts/app_theme.dart';
 import 'services/firebase_options.dart';
 
-import 'qrcode/pages/login/views/login_screen.dart';
+import 'qrcode/pages/login/view/login_screen.dart';
 import 'qrcode/pages/teacher/view/teacher_screen.dart';
 import 'qrcode/pages/student/view/student_screen.dart';
 import 'qrcode/pages/teacher/view/manage_teacher_screen.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'QRCode Chamada',
+      theme: AppTheme.theme,
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
         routes: {
