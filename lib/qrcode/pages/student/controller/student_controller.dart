@@ -15,7 +15,7 @@ class StudentController {
         return null;
       }
 
-      // 🔒 Validação de localização
+      // 🔒 Verificação de localização
       final insideArea = await LocationService.isInsideAllowedArea();
       if (!insideArea) {
         _showMessage(
@@ -25,7 +25,7 @@ class StudentController {
         return null;
       }
 
-      // ✅ Continua se estiver dentro da área
+      // 🔍 Verifica se o QR existe
       final qrDoc = await _firestore.collection('qrcodes').doc(qrId).get();
       if (!qrDoc.exists) {
         _showMessage(context, 'QR Code inválido ou expirado.');
@@ -35,6 +35,20 @@ class StudentController {
       final qrData = qrDoc.data()!;
       final aulaTitulo = qrData['title'] ?? 'Aula sem título';
 
+      // 🧠 NOVO: Verifica se o aluno já registrou presença neste QR
+      final existingScan = await _firestore
+          .collection('scans')
+          .where('qrId', isEqualTo: qrId)
+          .where('readerUid', isEqualTo: user.uid)
+          .limit(1)
+          .get();
+
+      if (existingScan.docs.isNotEmpty) {
+        _showMessage(context, '⚠️ Você já registrou presença nesta aula.');
+        return null;
+      }
+
+      // ✅ Registra a presença se ainda não houver
       await _firestore.collection('scans').add({
         'qrId': qrId,
         'readerName': user.displayName ?? user.email,

@@ -2,8 +2,8 @@ import 'package:geolocator/geolocator.dart';
 
 class LocationService {
   // Coordenadas da faculdade
-  static const double allowedLatitude = -23.200833;
-  static const double allowedLongitude = -47.286944;
+  static const double allowedLatitude = -23.18619058476852;
+  static const double allowedLongitude = -47.30268331873849;
   static const double allowedRadiusMeters = 1000; // 1 km
 
   /// Verifica se o usuário está dentro da área permitida
