@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'student/view/scan_list_screen.dart';
+
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -43,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _logout() async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
@@ -57,6 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Painel Principal'),
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -74,18 +80,46 @@ class _HomeScreenState extends State<HomeScreen> {
               style: const TextStyle(fontSize: 20),
             ),
             const SizedBox(height: 40),
+
+            // 👨‍🏫 Ações do Professor
             if (role == 'teacher') ...[
               ElevatedButton.icon(
                 icon: const Icon(Icons.qr_code),
-                label: const Text('Gerar QR Code (Chamada)'),
+                label: const Text('Gerar QR Code'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/teacher');
                 },
               ),
-            ] else if (role == 'aluno') ...[
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.list),
+                label: const Text('Ver Minhas Chamadas'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ScanListScreen()),
+                  );
+                },
+              ),
+            ],
+
+            // 🎓 Ações do Aluno
+            if (role == 'aluno') ...[
               ElevatedButton.icon(
                 icon: const Icon(Icons.qr_code_scanner),
                 label: const Text('Ler QR Code (Registrar Presença)'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/scanner');
                 },

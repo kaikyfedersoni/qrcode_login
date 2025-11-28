@@ -39,7 +39,7 @@ class _GenerateQRFormState extends State<GenerateQRForm> {
             foregroundColor: Colors.white,
           ),
           onPressed: _generateQRCode,
-          child: const Text("Gerar QR Code"),
+          child: const Text("Gerar"),
         ),
         const SizedBox(height: 20),
         if (qrData != null)

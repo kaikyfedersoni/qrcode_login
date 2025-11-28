@@ -16,19 +16,23 @@ class _StudentScreenState extends State<StudentScreen> {
   String? scannedData;
 
   Future<void> _onDetect(BarcodeCapture capture) async {
-    final barcodes = capture.barcodes;
-    if (barcodes.isNotEmpty && !hasRegistered) {
-      final data = barcodes.first.rawValue;
-      if (data != null && data.isNotEmpty) {
-        final aulaTitulo = await _controller.registerPresence(context, data);
-        if (aulaTitulo != null) {
-          setState(() {
-            hasRegistered = true;
-            scannedData = aulaTitulo;
-          });
-        }
-      }
+    if (hasRegistered) return;
+
+    final barcode = capture.barcodes.first;
+    final data = barcode.rawValue;
+
+    if (data == null || data.isEmpty) return;
+
+    final aulaTitulo = await _controller.registerPresence(context, data);
+
+    if (aulaTitulo != null) {
+      setState(() {
+        hasRegistered = true;
+        scannedData = aulaTitulo;
+      });
     }
+
+    // 🔥 EVITA NOVAS LEITURAS ATÉ O USUÁRIO SAIR DA TELA
   }
 
   @override
@@ -37,7 +41,12 @@ class _StudentScreenState extends State<StudentScreen> {
       appBar: AppBar(title: const Text("Aluno - Escanear QR Code")),
       body: Column(
         children: [
-          Expanded(child: QrScannerWidget(onDetect: _onDetect)),
+          Expanded(
+            child: QrScannerWidget(
+              onDetect: _onDetect,
+            ),
+          ),
+
           if (scannedData != null)
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -55,3 +64,4 @@ class _StudentScreenState extends State<StudentScreen> {
     );
   }
 }
+
